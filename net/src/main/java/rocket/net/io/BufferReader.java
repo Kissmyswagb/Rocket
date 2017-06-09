@@ -1,6 +1,5 @@
 package rocket.net.io;
 
-import io.netty.buffer.ByteBuf;
 import io.vertx.core.buffer.Buffer;
 
 public class BufferReader {

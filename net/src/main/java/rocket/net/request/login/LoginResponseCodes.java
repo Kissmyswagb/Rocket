@@ -1,6 +1,6 @@
 package rocket.net.request.login;
 
-public class ResponseCode {
+public class LoginResponseCodes {
 	public static final int SUCCESS = 2;
 	public static final int INVALID_USERNAME_PASSWORD = 3;
 	public static final int ACCOUNT_DISABLED = 4;

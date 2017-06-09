@@ -39,19 +39,19 @@ public class LoginRequest implements Request {
 		int rsa = reader.getUnsignedByte();
 		
 		if (!validRequest(connectionStatus)) { 
-			sendResponseCode(ResponseCode.SESSION_REJECTED);
+			sendResponseCode(LoginResponseCodes.SESSION_REJECTED);
 			throw new IllegalArgumentException("Invalid request type: " + connectionStatus + ", excepted: " + LoginConstants.LOGIN_REQUEST);	
 		}
 		if (!validSize(buffer.length(), size)) {
-			sendResponseCode(ResponseCode.SESSION_REJECTED);
+			sendResponseCode(LoginResponseCodes.SESSION_REJECTED);
 			throw new IllegalArgumentException("Buffer size is " + buffer.length()+ " however expected: " + size);
 		}
 		if (!validMagic(magic)) {
-			sendResponseCode(ResponseCode.SESSION_REJECTED);
+			sendResponseCode(LoginResponseCodes.SESSION_REJECTED);
 			throw new IllegalArgumentException("Magic value is " + magic+ " however expected: " + LoginConstants.MAGIC);
 		}
 		if (!validVersion(version)) {
-			sendResponseCode(ResponseCode.GAME_UPDATED);
+			sendResponseCode(LoginResponseCodes.GAME_UPDATED);
 			throw new IllegalArgumentException("Invalid client version: " + version + ", expected: " + LoginConstants.VERSION);
 		}
 		if (!validRSA(rsa)) {
@@ -72,7 +72,7 @@ public class LoginRequest implements Request {
 		PlayerProxy proxy = PlayerProxy.createPlayerAndProxy(username, session);
 		proxy.register();
 		
-		sendResponseCode(ResponseCode.SUCCESS);
+		sendResponseCode(LoginResponseCodes.SUCCESS);
 		writer.putByte(2);
 		writer.putByte(0);
 		

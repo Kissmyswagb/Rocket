@@ -1,8 +1,9 @@
-package rocket.net.request;
+package rocket.net.request.handshake;
 
 import java.security.SecureRandom;
 
 import io.vertx.core.buffer.Buffer;
+import rocket.net.request.Request;
 
 public class HandshakeRequest implements Request {
 

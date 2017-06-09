@@ -3,8 +3,8 @@ package rocket.net;
 import io.vertx.core.buffer.Buffer;
 import rocket.net.Session.State;
 import rocket.net.request.GameRequest;
-import rocket.net.request.HandshakeRequest;
 import rocket.net.request.Request;
+import rocket.net.request.handshake.HandshakeRequest;
 import rocket.net.request.login.LoginRequest;
 
 public class Handler implements io.vertx.core.Handler<Buffer> {
