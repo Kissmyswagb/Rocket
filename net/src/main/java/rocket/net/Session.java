@@ -2,11 +2,11 @@ package rocket.net;
 
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.net.NetSocket;
+import rocket.crypto.ISAACCipher;
 import rocket.net.io.BufferWriter;
 import rocket.net.request.message.Message;
 import rocket.net.request.message.MessageEncoder;
 import rocket.net.request.message.MessageRepo;
-import rocket.utils.crypto.ISAACCipher;
 
 public class Session {
 	public enum State {

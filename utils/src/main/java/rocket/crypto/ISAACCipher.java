@@ -1,4 +1,4 @@
-package rocket.utils.crypto;
+package rocket.crypto;
 
 public class ISAACCipher {
 	/**
