@@ -4,8 +4,8 @@
 	<classpathentry kind="src" path="src/test"/>
 	<classpathentry kind="src" path="game/src/main/java"/>
 	<classpathentry kind="src" path="game/src/test"/>
-	<classpathentry kind="src" path="net/src/main/java"/>
-	<classpathentry kind="src" path="net/src/test"/>
+	<classpathentry kind="src" path="network/src/main/java"/>
+	<classpathentry kind="src" path="network/src/test"/>
 	<classpathentry kind="src" path="utils/src/main/java"/>
 	<classpathentry kind="src" path="utils/src/test"/>
 	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
