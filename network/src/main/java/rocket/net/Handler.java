@@ -5,8 +5,8 @@ import rocket.game.dao.WorldDao;
 import rocket.net.Session.State;
 import rocket.net.io.BufferReader;
 import rocket.net.io.BufferWriter;
-import rocket.net.request.GameRequest;
 import rocket.net.request.Request;
+import rocket.net.request.game.GameRequest;
 import rocket.net.request.handshake.HandshakeRequest;
 import rocket.net.request.login.LoginRequest;
 

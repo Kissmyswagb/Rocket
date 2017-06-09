@@ -1,4 +1,4 @@
-package rocket.net.request;
+package rocket.net.request.game;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +8,7 @@ import rocket.game.player.PlayerProxy;
 import rocket.net.Session;
 import rocket.net.io.BufferReader;
 import rocket.net.io.BufferWriter;
+import rocket.net.request.Request;
 import rocket.net.request.message.Message;
 import rocket.net.request.message.MessageDecoder;
 import rocket.net.request.message.MessageHandler;

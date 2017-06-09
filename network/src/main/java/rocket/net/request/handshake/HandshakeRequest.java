@@ -11,8 +11,6 @@ import rocket.net.request.Request;
 
 public class HandshakeRequest implements Request {
 	private static final Logger logger = LoggerFactory.getLogger(HandshakeRequest.class);
-	private static final int GAME = 14;
-	private static final int UPDATE = 15;
 
 	@Override
 	public BufferWriter handle(BufferReader reader) {
@@ -20,12 +18,12 @@ public class HandshakeRequest implements Request {
 		int request = reader.getUnsignedByte();
 
 		switch (request) {
-		case GAME:
+		case HandshakeConstants.GAME:
 			writer.putLong(0);
 			writer.putByte(0);
 			writer.putLong(new SecureRandom().nextLong());
 			break;
-		case UPDATE:
+		case HandshakeConstants.UPDATE:
 			break;
 		default:
 			logger.warn("Unhandled handshake request: {}", request);
