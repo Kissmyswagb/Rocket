@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.net.NetServer;
 import io.vertx.core.net.NetServerOptions;
-
+import rocket.game.dao.WorldDao;
+import rocket.game.world.World;
 import rocket.net.Session.State;
 
 public class Server extends AbstractVerticle {
@@ -14,8 +15,13 @@ public class Server extends AbstractVerticle {
 	private NetServer server;
 	private int port;
 	
-	private Server(int port) {
+	private WorldDao worlds = WorldDao.createUnbounded();
+	
+	public Server(int port) {
 		this.port = port;
+
+		World world = new World();
+		worlds.add(world);
 	}
 	
 	@Override
@@ -27,7 +33,7 @@ public class Server extends AbstractVerticle {
 		server.connectHandler(socket -> { 
 			logger.info("Connection from: {}", socket.remoteAddress());
 			Session session = new Session(socket);
-			socket.handler(new Handler(session));	
+			socket.handler(new Handler(worlds, session));	
 			socket.closeHandler(s -> {
 				session.close();
 				session.switchState(State.LOGIN);
@@ -35,9 +41,5 @@ public class Server extends AbstractVerticle {
 			});
 		});
 		server.listen();
-	}
-	
-	public static Server createServer(int port) {
-		return new Server(port);
 	}
 }

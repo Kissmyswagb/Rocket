@@ -6,8 +6,6 @@ import rocket.game.player.PlayerProxy;
 public class World {
 	private PlayerDao playerDao = PlayerDao.createUnboundedDao();
 
-	public World() {}
-	
 	public void registerPlayer(PlayerProxy player) {
 		playerDao.add(player);
 	}

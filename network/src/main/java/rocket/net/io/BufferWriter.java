@@ -6,9 +6,6 @@ public class BufferWriter {
 	private Buffer buffer = Buffer.buffer();
 	
 	private BufferWriter() {}
-	private BufferWriter(int opcode) {
-		put(opcode);
-	}
 	
 	public BufferWriter putByte(int b) {
 		buffer.appendByte((byte) b);

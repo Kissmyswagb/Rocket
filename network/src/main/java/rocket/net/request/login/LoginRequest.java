@@ -1,7 +1,6 @@
 package rocket.net.request.login;
 
-import io.vertx.core.buffer.Buffer;
-
+import rocket.game.dao.WorldDao;
 import rocket.game.player.PlayerProxy;
 import rocket.net.Session;
 import rocket.net.io.BufferReader;
@@ -10,9 +9,11 @@ import rocket.net.request.Request;
 
 public class LoginRequest implements Request {
 	private Session session;
+	private WorldDao worlds;
 
-	public LoginRequest(Session session) {
+	public LoginRequest(WorldDao worlds, Session session) {
 		this.session = session;
+		this.worlds = worlds;
 	}
 
 	@Override
@@ -66,8 +67,8 @@ public class LoginRequest implements Request {
 		session.setWorld(world);
 		session.acceptKeys(serverSessionKey, clientSessionKey);
 
-		PlayerProxy proxy = PlayerProxy.createPlayerAndProxy(username, session);
-		proxy.register();
+		PlayerProxy proxy = PlayerProxy.create(username, session);
+		proxy.registerToWorld(worlds.get(world - 1));
 
 		sendResponseCode(LoginResponseCodes.SUCCESS);
 		writer.putByte(2);

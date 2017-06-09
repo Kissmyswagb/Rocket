@@ -13,23 +13,15 @@ public class Session {
 	public enum State {
 		HANDSHAKE, LOGIN, GAME;
 	}
-	private State state = State.HANDSHAKE;
-	private NetSocket socket;
 	
+	private State state = State.HANDSHAKE;
+	private ISAACCipher inCipher, outCipher;
+	private NetSocket socket;
 	private int world;
-	public void setWorld(int world) {
-		this.world = world;
-	}
-	public int getWorld() {
-		return world;
-	}
 	
 	public Session(NetSocket socket) {
 		this.socket = socket;
 	}
-	
-	private ISAACCipher inCipher;
-	private ISAACCipher outCipher;
 	
 	public void acceptKeys(long serverSessionKey, long clientSessionKey) {
 		int[] seed = { 
@@ -47,14 +39,6 @@ public class Session {
 		this.outCipher = outCipher;
 	}
 
-	public ISAACCipher getInCipher() {
-		return inCipher;
-	}
-	
-	public ISAACCipher getOutCipher() {
-		return outCipher;
-	}
-	
 	public <T extends Message> void write(T message) {
 		MessageEncoder encoded = MessageRepo.encode(message);
 		BufferWriter writer = encoded.encode(message);
@@ -62,11 +46,15 @@ public class Session {
 	}
 	
 	public void write(BufferWriter writer) {
-		write(writer.getBuffer());
+		if (writer != null) {
+			write(writer.getBuffer());
+		}
 	}
 
 	private void write(Buffer buffer) {
-		socket.write(buffer);
+		if (buffer != null) {
+			socket.write(buffer);
+		}
 	}
 	
 	public void close() {
@@ -77,7 +65,22 @@ public class Session {
 		this.state = state;
 	}
 	
+	public void setWorld(int world) {
+		this.world = world;
+	}
+	public int getWorld() {
+		return world;
+	}
+	
 	public State getState() {
 		return state;
+	}
+	
+	public ISAACCipher getInCipher() {
+		return inCipher;
+	}
+	
+	public ISAACCipher getOutCipher() {
+		return outCipher;
 	}
 }

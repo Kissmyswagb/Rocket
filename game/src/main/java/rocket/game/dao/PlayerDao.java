@@ -12,25 +12,12 @@ public class PlayerDao extends Dao<PlayerProxy> {
 	}
 
 	public PlayerProxy getPlayerBySession(Session session) {
-		return search(session);
-	}
-
-	public PlayerProxy getPlayerByName(String name) {
-		return search(name);
-	}
-
-	private PlayerProxy search(Object obj) {
 		boolean found = false;
 		PlayerProxy proxy = null;
 		Iterator<PlayerProxy> it = iterator();
 		while (it.hasNext() && !found) {
 			PlayerProxy next = it.next();
-			if (obj instanceof String) {
-				if (next.getPlayer().getName().equalsIgnoreCase((String) obj)) {
-					proxy = next;
-					found = true;
-				}
-			} else if (next.getSession().equals(obj)) {
+			if (next.getSession().equals(session)) {
 				proxy = next;
 				found = true;
 			}

@@ -11,37 +11,21 @@ public class WorldDao extends Dao<World> {
 		super(size);
 	}
 	
-	public PlayerProxy locatePlayer(String name) {
-		return locate(name);
-	}
-	
-	public PlayerProxy locatePlayer(Session session) {
-		return locate(session);
-	}
-	
-	private PlayerProxy locate(Object obj) {
+	public PlayerProxy locatePlayerBySession(Session session) {
 		Iterator<World> it = iterator();
 		PlayerProxy player = null;
 		boolean found = false;
 		while(it.hasNext() && !found) {
 			World world = it.next();
-			if (obj instanceof String) {
-				PlayerProxy p = world.getPlayerDao().getPlayerByName((String) obj);
-				if (p != null) {
-					player = p;
-					found = true;
-				}
-			} else {
-				PlayerProxy p = world.getPlayerDao().getPlayerBySession((Session) obj);
-				if (p != null) {
-					player = p;
-					found = true;
-				}
+			PlayerProxy p = world.getPlayerDao().getPlayerBySession(session);
+			if (p != null) {
+				player = p;
+				found = true;
 			}
 		}
 		return player;
 	}
-
+	
 	public static WorldDao createUnbounded() {
 		return new WorldDao(-1);
 	}

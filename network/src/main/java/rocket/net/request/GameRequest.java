@@ -3,7 +3,7 @@ package rocket.net.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import rocket.Rocket;
+import rocket.game.dao.WorldDao;
 import rocket.game.player.PlayerProxy;
 import rocket.net.Session;
 import rocket.net.io.BufferReader;
@@ -16,9 +16,11 @@ import rocket.net.request.message.MessageRepo;
 public class GameRequest implements Request {
 	private static final Logger logger = LoggerFactory.getLogger(GameRequest.class);
 	private Session session;
+	private WorldDao worlds;
 
-	public GameRequest(Session session) {
+	public GameRequest(WorldDao worlds, Session session) {
 		this.session = session;
+		this.worlds = worlds;
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class GameRequest implements Request {
 
 			if (handler != null) {
 
-				PlayerProxy player = Rocket.INSTANCE.getWorldDao().locatePlayer(session);
+				PlayerProxy player = worlds.locatePlayerBySession(session);
 				handler.handle(player, message);
 
 			} else {
@@ -46,7 +48,7 @@ public class GameRequest implements Request {
 			logger.warn("Unhandled opcode: {}", opcode);
 		}
 
-		return BufferWriter.writer();
+		return null;
 	}
 
 	private Message getDecodedMessage(MessageDecoder<?> decoder, BufferReader reader) {
