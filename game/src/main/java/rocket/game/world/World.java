@@ -7,7 +7,7 @@ public class World {
 	private PlayerDao playerDao = PlayerDao.createUnboundedDao();
 
 	public void registerPlayer(PlayerProxy player) {
-		playerDao.add(player);
+		playerDao.insert(player);
 	}
 	
 	public void removePlayer(PlayerProxy player) {

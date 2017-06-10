@@ -15,13 +15,13 @@ public class Server extends AbstractVerticle {
 	private NetServer server;
 	private int port;
 	
-	private WorldDao worlds = WorldDao.createUnbounded();
+	private WorldDao worlds = new WorldDao();
 	
 	public Server(int port) {
 		this.port = port;
 
 		World world = new World();
-		worlds.add(world);
+		worlds.insert(world);
 	}
 	
 	@Override
