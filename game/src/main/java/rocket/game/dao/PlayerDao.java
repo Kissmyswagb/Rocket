@@ -6,20 +6,20 @@ import java.util.Iterator;
 import java.util.List;
 
 import rocket.game.player.PlayerProxy;
-import rocket.net.Session;
+import rocket.net.SessionProxy;
 
 public class PlayerDao implements Dao<PlayerProxy> {
-	private List<PlayerProxy> elements = new ArrayList<>();
+	private List<PlayerProxy> players = new ArrayList<>();
 	private int capacity;
 	
 	private PlayerDao(int capacity) {
 		this.capacity = capacity;
 	}
 
-	public PlayerProxy getPlayerBySession(Session session) {
+	public PlayerProxy getPlayerBySession(SessionProxy session) {
 		boolean found = false;
 		PlayerProxy proxy = null;
-		Iterator<PlayerProxy> it = elements.iterator();
+		Iterator<PlayerProxy> it = players.iterator();
 		while (it.hasNext() && !found) {
 			PlayerProxy next = it.next();
 			if (next.getSession().equals(session)) {
@@ -33,7 +33,7 @@ public class PlayerDao implements Dao<PlayerProxy> {
 	public PlayerProxy getPlayerByName(String name) {
 		boolean found = false;
 		PlayerProxy proxy = null;
-		Iterator<PlayerProxy> it = elements.iterator();
+		Iterator<PlayerProxy> it = players.iterator();
 		while (it.hasNext() && !found) {
 			PlayerProxy next = it.next();
 			if (next.getPlayer().getName().equalsIgnoreCase(name)) {
@@ -45,25 +45,30 @@ public class PlayerDao implements Dao<PlayerProxy> {
 	}
 	
 	public PlayerProxy get(int index) {
-		return elements.get(index);
+		return players.get(index);
 	}
 
 	@Override
 	public void insert(PlayerProxy element) {
-		if (elements.size() > capacity && capacity != -1) {
+		if (players.size() > capacity && capacity != -1) {
 			throw new BufferOverflowException();
 		}
-		elements.add(element);
+		players.add(element);
 	}
 
 	@Override
 	public void remove(PlayerProxy element) {
-		elements.remove(element);
+		players.remove(element);
+	}
+	
+	@Override
+	public PlayerProxy[] getAll() {
+		return (PlayerProxy[]) players.toArray();
 	}
 
 	@Override
 	public int size() {
-		return elements.size();
+		return players.size();
 	}
 	
 	public static PlayerDao createUnboundedDao() {

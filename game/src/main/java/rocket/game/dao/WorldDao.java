@@ -6,13 +6,13 @@ import java.util.List;
 
 import rocket.game.player.PlayerProxy;
 import rocket.game.world.World;
-import rocket.net.Session;
+import rocket.net.SessionProxy;
 
 public class WorldDao implements Dao<World> {
-	private List<World> elements = new ArrayList<>();
+	private List<World> worlds = new ArrayList<>();
 
-	public PlayerProxy locatePlayerBySession(Session session) {
-		Iterator<World> it = elements.iterator();
+	public PlayerProxy locatePlayerBySession(SessionProxy session) {
+		Iterator<World> it = worlds.iterator();
 		PlayerProxy player = null;
 		boolean found = false;
 		while(it.hasNext() && !found) {
@@ -27,21 +27,26 @@ public class WorldDao implements Dao<World> {
 	}
 	
 	public World get(int id) {
-		return elements.get(id - 1);
+		return worlds.get(id - 1);
 	}
 	
 	@Override
 	public void insert(World world) {
-		elements.add(world);
+		worlds.add(world);
 	}
 
 	@Override
 	public void remove(World world) {
-		elements.remove(world);
+		worlds.remove(world);
+	}
+	
+	@Override
+	public World[] getAll() {
+		return (World[]) worlds.toArray();
 	}
 
 	@Override
 	public int size() {
-		return elements.size();
+		return worlds.size();
 	}
 }

@@ -1,13 +1,13 @@
 package rocket.game.player;
 
 import rocket.game.world.World;
-import rocket.net.Session;
+import rocket.net.SessionProxy;
 
 public class PlayerProxy {
 	private Player player;
-	private Session session;
+	private SessionProxy session;
 	
-	private PlayerProxy(Player player, Session session) {
+	private PlayerProxy(Player player, SessionProxy session) {
 		this.player = player;
 		this.session = session;
 	}
@@ -20,11 +20,11 @@ public class PlayerProxy {
 		return player;
 	}
 	
-	public Session getSession() {
+	public SessionProxy getSession() {
 		return session;
 	}
 	
-	public static PlayerProxy create(String name, Session session) {
-		return new PlayerProxy(new Player(name), session);
+	public static PlayerProxy create(String name, SessionProxy session2) {
+		return new PlayerProxy(new Player(name), session2);
 	}
 }

@@ -2,19 +2,19 @@ package rocket.net;
 
 import io.vertx.core.buffer.Buffer;
 import rocket.game.dao.WorldDao;
-import rocket.net.Session.State;
 import rocket.net.io.BufferReader;
 import rocket.net.io.BufferWriter;
 import rocket.net.request.Request;
 import rocket.net.request.game.GameRequest;
 import rocket.net.request.handshake.HandshakeRequest;
 import rocket.net.request.login.LoginRequest;
+import rocket.net.request.update.UpdateRequest;
 
 public class Handler implements io.vertx.core.Handler<Buffer> {
-	private Session session;
+	private SessionProxy session;
 	private WorldDao worldDao;
 	
-	public Handler(WorldDao worldDao, Session session) {
+	public Handler(WorldDao worldDao, SessionProxy session) {
 		this.session = session;
 		this.worldDao = worldDao;
 	}
@@ -26,8 +26,11 @@ public class Handler implements io.vertx.core.Handler<Buffer> {
 		switch (session.getState()) {
 		
 		case HANDSHAKE:
-			request = new HandshakeRequest();
-			session.switchState(State.LOGIN);
+			request = new HandshakeRequest(session);
+			session.switchState(State.UPDATE);
+			break;
+		case UPDATE:
+			request = new UpdateRequest(session);
 			break;
 		case LOGIN:
 			request = new LoginRequest(worldDao, session);
@@ -38,10 +41,8 @@ public class Handler implements io.vertx.core.Handler<Buffer> {
 			break;
 		}
 		
-		if (request != null) {
-			BufferWriter writer = request.handle(new BufferReader(buffer.getBytes()));
-			session.write(writer);
-		}
+		BufferWriter writer = request.handle(new BufferReader(buffer.getBytes()));
+		session.write(writer);
 	}
 
 }

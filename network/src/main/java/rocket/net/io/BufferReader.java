@@ -67,17 +67,17 @@ public class BufferReader {
         return b.toString();
 	}
 	
-	public int getUnsignedShort(Conversion conversion, Endian order) {
-		return orderShort(conversion, order) & 0xffff;
+	public int getUnsignedShort(Conversion conversion, Endian endian) {
+		return endianShort(conversion, endian) & 0xffff;
 	}
 	
-	public int getSignedShort(Conversion conversion, Endian order) {
-		return orderShort(conversion, order);
+	public int getSignedShort(Conversion conversion, Endian endian) {
+		return endianShort(conversion, endian);
 	}
 	
-	private int orderShort(Conversion conversion, Endian order) {
+	private int endianShort(Conversion conversion, Endian endian) {
 		int value = 0;
-		switch(order) {
+		switch(endian) {
 		case LITTLE:
 			value |= getUnsignedByte(conversion);
             value |= getUnsignedByte() << 8;
@@ -123,8 +123,8 @@ public class BufferReader {
 		return (int) value;
 	}
 	
-	public int getSignedInt(Conversion conversion, Endian order) {
-		return (int) (getUnsignedInt(conversion, order) & 0xffffffffL);
+	public int getSignedInt(Conversion conversion, Endian endian) {
+		return (int) (getUnsignedInt(conversion, endian) & 0xffffffffL);
 	}
 	
 	public long getL() {
@@ -133,9 +133,9 @@ public class BufferReader {
 		return value;
 	}
 	
-	public int getUnsignedLong(Conversion conversion, Endian order) {
+	public int getUnsignedLong(Conversion conversion, Endian endian) {
 		int value = 0;
-		 switch (order) {
+		 switch (endian) {
 	        case BIG:
 	        	value |= getUnsignedByte() << 56;
 	        	value |= getUnsignedByte() << 48;

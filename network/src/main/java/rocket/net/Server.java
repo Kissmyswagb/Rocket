@@ -8,7 +8,6 @@ import io.vertx.core.net.NetServer;
 import io.vertx.core.net.NetServerOptions;
 import rocket.game.dao.WorldDao;
 import rocket.game.world.World;
-import rocket.net.Session.State;
 
 public class Server extends AbstractVerticle {
 	private static final Logger logger = LoggerFactory.getLogger(Server.class);
@@ -19,27 +18,40 @@ public class Server extends AbstractVerticle {
 	
 	public Server(int port) {
 		this.port = port;
-
-		World world = new World();
-		worlds.insert(world);
+		setupWorlds();
+	}
+	
+	private void setupWorlds() {
+		World _317 = new World();
+		World _550 = new World();
+		worlds.insert(_317); // 1
+		worlds.insert(_550);    // 2
 	}
 	
 	@Override
 	public void start() {
+		
 		NetServerOptions options = new NetServerOptions()
-				.setPort(port)
-				.setIdleTimeout(10);
+						.setPort(port)
+						.setIdleTimeout(10);
+		
 		server = vertx.createNetServer(options);
+		
 		server.connectHandler(socket -> { 
+			
 			logger.info("Connection from: {}", socket.remoteAddress());
-			Session session = new Session(socket);
+			
+			SessionProxy session = new SessionProxy(new Session(socket));
 			socket.handler(new Handler(worlds, session));	
+			
 			socket.closeHandler(s -> {
 				session.close();
 				session.switchState(State.LOGIN);
 				logger.info("{} disconnected", socket.remoteAddress());
 			});
+			
 		});
+		
 		server.listen();
 	}
 }

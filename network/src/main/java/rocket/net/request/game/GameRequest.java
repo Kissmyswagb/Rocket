@@ -5,42 +5,49 @@ import org.slf4j.LoggerFactory;
 
 import rocket.game.dao.WorldDao;
 import rocket.game.player.PlayerProxy;
-import rocket.net.Session;
+import rocket.net.SessionProxy;
 import rocket.net.io.BufferReader;
 import rocket.net.io.BufferWriter;
 import rocket.net.request.Request;
 import rocket.net.request.message.Message;
 import rocket.net.request.message.MessageDecoder;
+import rocket.net.request.message.MessageEncoder;
+import rocket.net.request.message.MessageRepositoryFactory;
 import rocket.net.request.message.MessageHandler;
-import rocket.net.request.message.MessageRepo;
 
 public class GameRequest implements Request {
 	private static final Logger logger = LoggerFactory.getLogger(GameRequest.class);
-	private Session session;
+	private SessionProxy session;
 	private WorldDao worlds;
-
-	public GameRequest(WorldDao worlds, Session session) {
+	
+	public GameRequest(WorldDao worlds, SessionProxy session) {
 		this.session = session;
 		this.worlds = worlds;
 	}
 
 	@Override
 	public BufferWriter handle(BufferReader reader) {
+		BufferWriter writer = new BufferWriter();
+		
 		int opcode = getOpcode(reader);
 		int size = getSize(reader);
-
-		MessageDecoder<?> decoder = getMessageDecoder(opcode);
-
+		
+		MessageDecoder decoder = getMessageDecoder(opcode);
+		
 		if (decoder != null) {
-
+			
 			Message message = getDecodedMessage(decoder, reader);
 			MessageHandler handler = getMessageHandler(message);
-
+			PlayerProxy player = worlds.locatePlayerBySession(session);
+			
 			if (handler != null) {
-
-				PlayerProxy player = worlds.locatePlayerBySession(session);
+				MessageEncoder encoder = getMessageEncoder(message);
 				handler.handle(player, message);
-
+				
+				if (encoder != null) {
+					writer.clone(encoder.encode(message));
+				}
+				
 			} else {
 				logger.warn("No handler set for {}", message.getClass());
 			}
@@ -48,20 +55,24 @@ public class GameRequest implements Request {
 		} else {
 			logger.warn("Unhandled opcode: {}", opcode);
 		}
-
-		return null;
+		
+		return writer;
 	}
 
 	private Message getDecodedMessage(MessageDecoder<?> decoder, BufferReader reader) {
 		return decoder.decode(reader);
 	}
-
+	
 	private MessageDecoder<?> getMessageDecoder(int opcode) {
-		return MessageRepo.getDecoder(opcode);
+		return MessageRepositoryFactory.getMessageRepo(session.getVersion()).getDecoder(opcode);
+	}
+	
+	private MessageEncoder<?> getMessageEncoder(Message message) {
+		return MessageRepositoryFactory.getMessageRepo(session.getVersion()).getEncoder(message);
 	}
 
 	private MessageHandler<?> getMessageHandler(Message message) {
-		return MessageRepo.getHandler(message);
+		return MessageRepositoryFactory.getMessageRepo(session.getVersion()).getHandler(message);
 	}
 
 	private int getOpcode(BufferReader reader) {

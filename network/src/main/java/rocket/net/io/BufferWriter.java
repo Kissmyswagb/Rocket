@@ -5,11 +5,18 @@ import io.vertx.core.buffer.Buffer;
 public class BufferWriter {
 	private Buffer buffer = Buffer.buffer();
 	
-	private BufferWriter() {}
+	public BufferWriter clone(BufferWriter writer) {
+		buffer.appendBuffer(writer.getBuffer());
+		return this;
+	}
 	
-	public BufferWriter putByte(int b) {
+	private BufferWriter putByte(int b) {
 		buffer.appendByte((byte) b);
 		return this;
+	}
+	
+	public int getOpcode() {
+		return buffer.getByte(0);
 	}
 	
 	public BufferWriter putBytes(byte[] bytes) {
@@ -37,20 +44,20 @@ public class BufferWriter {
 		return this;
 	}
 	
-	public BufferWriter put(int value, Conversion transformation) {
-		putByte(Transformer.transform(transformation, value));
+	public BufferWriter put(int value, Conversion conversion) {
+		putByte(Transformer.transform(conversion, value));
 		return this;
 	}
 	
-	public BufferWriter putShort(int value, Conversion transformation, Endian order) {
-		switch(order) {
+	public BufferWriter putShort(int value, Conversion conversion, Endian endian) {
+		switch(endian) {
 		case LITTLE:
-			put(value, transformation);
+			put(value, conversion);
             put(value >> 8);
 			break;
 		case BIG:
             put(value >> 8);
-			put(value, transformation);
+			put(value, conversion);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported operation");
@@ -58,40 +65,40 @@ public class BufferWriter {
 		return this;
 	}
 	
-	public BufferWriter putInt(int value, Conversion transformation, Endian order) {
-		switch(order) {
+	public BufferWriter putInt(int value, Conversion conversion, Endian endian) {
+		switch(endian) {
 		case LITTLE:
-			 put(value, transformation);
+			 put(value, conversion);
 	         put(value >> 8);
 	         put(value >> 16);
 	         put(value >> 24);
 			break;
 		case MIDDLE:
 			put(value >> 8);
-            put(value, transformation);
+            put(value, conversion);
             put(value >> 24);
             put(value >> 16);
 			break;
 		case INVERSED_MIDDLE:
 			put(value >> 16);
             put(value >> 24);
-            put(value, transformation);
+            put(value, conversion);
             put(value >> 8);
 			break;
 		case BIG:
 			put(value >> 24);
             put(value >> 16);
             put(value >> 8);
-            put(value, transformation);
+            put(value, conversion);
 			break;
 		}
 		return this;
 	}
 	
-	public BufferWriter putLong(int value, Conversion transformation, Endian order) {
-		switch(order) {
+	public BufferWriter putLong(int value, Conversion conversion, Endian endian) {
+		switch(endian) {
 		case LITTLE:
-			put(value, transformation);
+			put(value, conversion);
             put(value >> 8);
             put(value >> 16);
             put(value >> 24);
@@ -108,7 +115,7 @@ public class BufferWriter {
             put(value >> 24);
             put(value >> 16);
             put(value >> 8);
-            put(value, transformation);
+            put(value, conversion);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported operation");
@@ -123,12 +130,8 @@ public class BufferWriter {
 		put(10);
 		return this;
 	}
-	
+
 	public Buffer getBuffer() {
 		return buffer;
-	}
-	
-	public static BufferWriter writer() {
-		return new BufferWriter();
 	}
 }
